@@ -5,11 +5,19 @@
 #include <QFile>
 #include <QDir>
 #include <QRegularExpression>
+#include <QtConcurrent>
+#include <QFuture>
+#include <QDebug>
 
 FileListWidget::FileListWidget(QWidget *parent)
     : QWidget(parent)
 {
     setupUI();
+    
+    // Initialize the watcher for async preview generation
+    previewWatcher = new QFutureWatcher<QString>(this);
+    connect(previewWatcher, &QFutureWatcher<QString>::finished,
+            this, &FileListWidget::onPreviewsReady);
 }
 
 void FileListWidget::setupUI()
@@ -91,24 +99,34 @@ void FileListWidget::clearFiles()
 
 void FileListWidget::updatePreviews(const QList<QPair<QString, QString>> &operations)
 {
-    for (int i = 0; i < files.size(); ++i) {
-        QString newName = applyOperations(files[i].originalName, operations);
-        files[i].newName = newName;
-        files[i].item->setText(2, newName);
-        
-        // Highlight changes
-        if (newName != files[i].originalName) {
-            files[i].item->setForeground(2, QBrush(Qt::darkGreen));
-            QFont font = files[i].item->font(2);
-            font.setBold(true);
-            files[i].item->setFont(2, font);
-        } else {
-            files[i].item->setForeground(2, QBrush(Qt::black));
-            QFont font = files[i].item->font(2);
-            font.setBold(false);
-            files[i].item->setFont(2, font);
-        }
+    // Cancel any pending preview computation
+    if (previewWatcher->isRunning()) {
+        previewWatcher->cancel();
+        previewWatcher->waitForFinished();
     }
+    
+    // If no files, nothing to do
+    if (files.isEmpty()) {
+        return;
+    }
+    
+    // Create a lambda that captures operations and applies them to a filename
+    // Note: We capture 'operations' by value to ensure it remains valid
+    // We don't capture 'this' as applyOperations is now static and thread-safe
+    auto applyOpsFunc = [operations](const QString &fileName) -> QString {
+        return FileListWidget::applyOperations(fileName, operations);
+    };
+    
+    // Extract original filenames for parallel processing
+    QList<QString> originalNames;
+    originalNames.reserve(files.size());
+    for (const auto &file : files) {
+        originalNames.append(file.originalName);
+    }
+    
+    // Start parallel computation of new names
+    QFuture<QString> future = QtConcurrent::mapped(originalNames, applyOpsFunc);
+    previewWatcher->setFuture(future);
 }
 
 int FileListWidget::applyRename(QStringList &errors)
@@ -156,6 +174,41 @@ int FileListWidget::applyRename(QStringList &errors)
 void FileListWidget::onItemSelectionChanged()
 {
     // Can be used for future enhancements
+}
+
+void FileListWidget::onPreviewsReady()
+{
+    // Get results from the parallel computation
+    QList<QString> results = previewWatcher->future().results();
+    
+    // Validate that the number of results matches the number of files
+    // If they don't match, files may have been added/removed during computation
+    // In this case, we skip the update as it would be inconsistent
+    if (results.size() != files.size()) {
+        qWarning() << "Preview results size mismatch: expected" << files.size() 
+                   << "but got" << results.size() << "- skipping update";
+        return;
+    }
+    
+    // Update UI with the computed new names (this runs in the main thread)
+    for (int i = 0; i < files.size(); ++i) {
+        QString newName = results[i];
+        files[i].newName = newName;
+        files[i].item->setText(2, newName);
+        
+        // Highlight changes
+        if (newName != files[i].originalName) {
+            files[i].item->setForeground(2, QBrush(Qt::darkGreen));
+            QFont font = files[i].item->font(2);
+            font.setBold(true);
+            files[i].item->setFont(2, font);
+        } else {
+            files[i].item->setForeground(2, QBrush(Qt::black));
+            QFont font = files[i].item->font(2);
+            font.setBold(false);
+            files[i].item->setFont(2, font);
+        }
+    }
 }
 
 QString FileListWidget::applyOperations(const QString &fileName, 

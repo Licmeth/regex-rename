@@ -8,6 +8,7 @@
 #include <QFileInfo>
 #include <QPair>
 #include <QList>
+#include <QFutureWatcher>
 
 struct FileEntry {
     QString fullPath;
@@ -34,14 +35,16 @@ signals:
 
 private slots:
     void onItemSelectionChanged();
+    void onPreviewsReady();
 
 private:
     void setupUI();
-    QString applyOperations(const QString &fileName, 
-                           const QList<QPair<QString, QString>> &operations);
-
+    static QString applyOperations(const QString &fileName, 
+                                   const QList<QPair<QString, QString>> &operations);
+    
     QTreeWidget *treeWidget;
     QList<FileEntry> files;
+    QFutureWatcher<QString> *previewWatcher;
 };
 
 #endif // FILELISTWIDGET_H
