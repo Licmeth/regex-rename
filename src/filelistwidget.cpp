@@ -104,15 +104,15 @@ void FileListWidget::updatePreviews(const QList<QPair<QString, QString>> &operat
         previewWatcher->waitForFinished();
     }
     
-    // Store operations for when the async computation completes
-    pendingOperations = operations;
-    
     // If no files, nothing to do
     if (files.isEmpty()) {
         return;
     }
     
     // Create a lambda that captures operations and applies them to a filename
+    // Note: We capture 'operations' by value to ensure it remains valid
+    // 'this' is safe because QFutureWatcher is a child of this widget and will be
+    // destroyed before the parent, ensuring no dangling pointer access
     auto applyOpsFunc = [operations, this](const QString &fileName) -> QString {
         return this->applyOperations(fileName, operations);
     };
@@ -181,8 +181,15 @@ void FileListWidget::onPreviewsReady()
     // Get results from the parallel computation
     QList<QString> results = previewWatcher->future().results();
     
+    // Validate that the number of results matches the number of files
+    // If they don't match, files may have been added/removed during computation
+    // In this case, we skip the update as it would be inconsistent
+    if (results.size() != files.size()) {
+        return;
+    }
+    
     // Update UI with the computed new names (this runs in the main thread)
-    for (int i = 0; i < files.size() && i < results.size(); ++i) {
+    for (int i = 0; i < files.size(); ++i) {
         QString newName = results[i];
         files[i].newName = newName;
         files[i].item->setText(2, newName);

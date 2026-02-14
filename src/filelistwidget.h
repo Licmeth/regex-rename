@@ -46,7 +46,6 @@ private:
     QTreeWidget *treeWidget;
     QList<FileEntry> files;
     QFutureWatcher<QString> *previewWatcher;
-    QList<QPair<QString, QString>> pendingOperations;
 };
 
 #endif // FILELISTWIDGET_H
