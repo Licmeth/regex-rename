@@ -135,3 +135,51 @@ QString ChangeExtensionOperation::perform(const QString &fileName, int fileIndex
     }
     return result;
 }
+
+QString ChangeCaseOperation::perform(const QString &fileName, int fileIndex) const
+{
+    // Separate basename from extension
+    int dotIndex = fileName.lastIndexOf('.');
+    QString baseName;
+    QString extension;
+    
+    if (dotIndex > 0) {
+        // Has extension - only change case of basename
+        baseName = fileName.left(dotIndex);
+        extension = fileName.mid(dotIndex);
+    } else {
+        // No extension - use entire filename as basename
+        baseName = fileName;
+        extension = "";
+    }
+    
+    // Apply case transformation to basename
+    switch (m_caseType) {
+        case Lowercase:
+            baseName = baseName.toLower();
+            break;
+        case Uppercase:
+            baseName = baseName.toUpper();
+            break;
+        case TitleCase: {
+            // Convert to title case: capitalize first letter of each word
+            baseName = baseName.toLower();
+            bool capitalizeNext = true;
+            for (int i = 0; i < baseName.length(); ++i) {
+                QChar c = baseName[i];
+                if (c.isLetter()) {
+                    if (capitalizeNext) {
+                        baseName[i] = c.toUpper();
+                        capitalizeNext = false;
+                    }
+                } else {
+                    // Non-letter characters (spaces, underscores, etc.) trigger capitalization of next letter
+                    capitalizeNext = true;
+                }
+            }
+            break;
+        }
+    }
+    
+    return baseName + extension;
+}
