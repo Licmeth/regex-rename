@@ -14,6 +14,7 @@ A Qt 6 based batch file renaming application with a graphical user interface. Th
 
 - **Visual Operations**: Add, remove, and reorder operations using a card-based interface
 - **Real-time Preview**: See how your files will be renamed before applying changes
+- **Auto-Numbering**: Use tags like `<0>`, `<00:5>`, or `<000:14>` for sequential file numbering
 - **Multiple Operations**: Support for:
   - Replace (using regex patterns)
   - Add Prefix

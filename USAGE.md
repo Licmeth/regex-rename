@@ -22,10 +22,10 @@ The application window is divided into three main sections:
 The operations panel displays a list of operation cards. Each card represents a transformation to apply to filenames.
 
 **Operation Types:**
-- **Replace**: Use regex patterns to find and replace text in filenames (excluding the extension)
-- **Add Prefix**: Add text to the beginning of the filename
-- **Add Suffix**: Add text before the file extension
-- **Insert**: Insert text at a specified position (0-based index, excluding the extension)
+- **Replace**: Use regex patterns to find and replace text in filenames (excluding the extension). Supports auto-numbering tags.
+- **Add Prefix**: Add text to the beginning of the filename. Supports auto-numbering tags.
+- **Add Suffix**: Add text before the file extension. Supports auto-numbering tags.
+- **Insert**: Insert text at a specified position (0-based index, excluding the extension). Supports auto-numbering tags.
 - **Change Extension**: Change the file extension to a new one
 
 **Operation Card Controls:**
@@ -122,11 +122,46 @@ Files with changes are highlighted in bold green text in the "New Name" column.
 4. Add Change Extension operation: `.bak`
 5. Result: "my document.txt" → "backup_my_document.bak"
 
+### Example 6: Auto-Numbering with Tags
+**Goal**: Add sequential numbers to files
+
+1. Add multiple files (e.g., "photo.jpg", "photo (2).jpg", "photo (3).jpg")
+2. Add a Prefix operation
+3. Prefix: `IMG_<000:1>_`
+4. Result:
+   - "photo.jpg" → "IMG_001_photo.jpg"
+   - "photo (2).jpg" → "IMG_002_photo (2).jpg"
+   - "photo (3).jpg" → "IMG_003_photo (3).jpg"
+
+## Auto-Numbering Tags
+
+Tags allow you to include auto-incrementing numbers in prefix, suffix, replace text, and insert operations. Tag format: `<zeros:start>`
+
+**Format Components:**
+- **zeros**: One or more zeros defining the number format (leading zeros)
+- **:start** (optional): Starting number (defaults to 1 if omitted)
+
+**Common Examples:**
+- `<0>` - Single digit starting at 1: 1, 2, 3...
+- `<00>` - Two digits with leading zeros: 01, 02, 03...
+- `<000>` - Three digits: 001, 002, 003...
+- `<0:5>` - Single digit starting at 5: 5, 6, 7...
+- `<00:14>` - Two digits starting at 14: 14, 15, 16...
+
+**Multiple Tags:**
+You can use multiple tags in the same operation. Example: `<0>-<00:5>_` produces `1-05_`, `2-06_`, etc.
+
+**Notes:**
+- Tags work in prefix, suffix, replace text, and insert text fields
+- File indexing is 0-based, but the start number determines the first visible number
+- Numbers exceeding the format width will use additional digits (e.g., `<00>` at file 100 shows `100`)
+
 ## Tips
 
 - **Preview First**: Always check the preview before applying
 - **Operation Order Matters**: Operations are applied sequentially
 - **Regex Power**: Use regex patterns for complex replacements
+- **Auto-Numbering**: Use tags like `<0>`, `<00:5>`, or `<000:14>` for sequential numbering (see Auto-Numbering Tags section above)
 - **Extension Preservation**: All operations except "Change Extension" preserve the file extension - they only modify the basename
 - **Undo**: There is no undo - make sure to preview carefully
 - **Conflicts**: If a target filename already exists, that file will be skipped with an error

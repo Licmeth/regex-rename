@@ -18,15 +18,25 @@ public:
     /**
      * @brief Apply this operation to the given filename.
      * @param fileName The input filename to transform
+     * @param fileIndex The index of the file (0-based) used for tag replacement
      * @return The transformed filename
      */
-    virtual QString perform(const QString &fileName) const = 0;
+    virtual QString perform(const QString &fileName, int fileIndex = 0) const = 0;
     
     /**
      * @brief Get the operation type identifier.
      * @return A string identifying the operation type (e.g., "replace", "prefix")
      */
     virtual QString getType() const = 0;
+
+protected:
+    /**
+     * @brief Replace numbering tags in text with formatted numbers.
+     * @param text The text containing tags like <0:0> or <00:5>
+     * @param fileIndex The 0-based index of the current file
+     * @return The text with tags replaced by formatted numbers
+     */
+    static QString replaceTags(const QString &text, int fileIndex);
 };
 
 /**
@@ -40,7 +50,7 @@ public:
     ReplaceOperation(const QString &pattern, const QString &replacement)
         : m_pattern(pattern), m_replacement(replacement) {}
     
-    QString perform(const QString &fileName) const override;
+    QString perform(const QString &fileName, int fileIndex = 0) const override;
     QString getType() const override { return "replace"; }
     
     QString getPattern() const { return m_pattern; }
@@ -60,7 +70,7 @@ public:
     explicit PrefixOperation(const QString &prefix)
         : m_prefix(prefix) {}
     
-    QString perform(const QString &fileName) const override;
+    QString perform(const QString &fileName, int fileIndex = 0) const override;
     QString getType() const override { return "prefix"; }
     
     QString getPrefix() const { return m_prefix; }
@@ -78,7 +88,7 @@ public:
     explicit SuffixOperation(const QString &suffix)
         : m_suffix(suffix) {}
     
-    QString perform(const QString &fileName) const override;
+    QString perform(const QString &fileName, int fileIndex = 0) const override;
     QString getType() const override { return "suffix"; }
     
     QString getSuffix() const { return m_suffix; }
@@ -96,7 +106,7 @@ public:
     InsertOperation(int position, const QString &text)
         : m_position(position), m_text(text) {}
     
-    QString perform(const QString &fileName) const override;
+    QString perform(const QString &fileName, int fileIndex = 0) const override;
     QString getType() const override { return "insert"; }
     
     int getPosition() const { return m_position; }
@@ -116,7 +126,7 @@ public:
     explicit ChangeExtensionOperation(const QString &newExtension)
         : m_newExtension(newExtension) {}
     
-    QString perform(const QString &fileName) const override;
+    QString perform(const QString &fileName, int fileIndex = 0) const override;
     QString getType() const override { return "change_ext"; }
     
     QString getNewExtension() const { return m_newExtension; }
