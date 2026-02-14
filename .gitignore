@@ -39,3 +39,25 @@
 
 # debug information files
 *.dwo
+
+# Build directories
+build/
+build-*/
+cmake-build-*/
+
+# Qt specific
+moc_*.cpp
+qrc_*.cpp
+ui_*.h
+*.qm
+.qmake.stash
+
+# IDE files
+.vscode/
+.idea/
+*.user
+*.pro.user
+*.autosave
+
+# macOS
+.DS_Store
