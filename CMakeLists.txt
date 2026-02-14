@@ -20,6 +20,8 @@ set(PROJECT_SOURCES
     src/operationlistwidget.h
     src/filelistwidget.cpp
     src/filelistwidget.h
+    src/operation.cpp
+    src/operation.h
 )
 
 add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})

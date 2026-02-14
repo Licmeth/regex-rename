@@ -125,6 +125,6 @@ void MainWindow::onAbout()
 
 void MainWindow::updatePreviews()
 {
-    QList<QPair<QString, QString>> operations = operationList->getOperations();
+    QList<std::shared_ptr<Operation>> operations = operationList->getOperations();
     fileList->updatePreviews(operations);
 }

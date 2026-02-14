@@ -9,6 +9,9 @@
 #include <QPair>
 #include <QList>
 #include <QFutureWatcher>
+#include <memory>
+
+class Operation;
 
 struct FileEntry {
     QString fullPath;
@@ -27,7 +30,7 @@ public:
     
     void addFiles(const QStringList &filePaths);
     void clearFiles();
-    void updatePreviews(const QList<QPair<QString, QString>> &operations);
+    void updatePreviews(const QList<std::shared_ptr<Operation>> &operations);
     int applyRename(QStringList &errors);
 
 signals:
@@ -40,7 +43,7 @@ private slots:
 private:
     void setupUI();
     static QString applyOperations(const QString &fileName, 
-                                   const QList<QPair<QString, QString>> &operations);
+                                   const QList<std::shared_ptr<Operation>> &operations);
     
     QTreeWidget *treeWidget;
     QList<FileEntry> files;

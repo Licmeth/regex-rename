@@ -6,8 +6,10 @@
 #include <QPushButton>
 #include <QScrollArea>
 #include <QList>
+#include <memory>
 
 class OperationCard;
+class Operation;
 
 class OperationListWidget : public QWidget
 {
@@ -16,7 +18,7 @@ class OperationListWidget : public QWidget
 public:
     explicit OperationListWidget(QWidget *parent = nullptr);
     
-    QList<QPair<QString, QString>> getOperations() const;
+    QList<std::shared_ptr<Operation>> getOperations() const;
     void addOperation();
 
 signals:

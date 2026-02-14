@@ -93,11 +93,12 @@ QString OperationCard::getOperationType() const
 
 QString OperationCard::getOperationValue() const
 {
-    QString type = getOperationType();
-    if (type == "replace") {
-        return valueEdit->text() + "|" + replacementEdit->text();
-    }
     return valueEdit->text();
+}
+
+QString OperationCard::getReplacementValue() const
+{
+    return replacementEdit->text();
 }
 
 void OperationCard::setOperationType(const QString &type)

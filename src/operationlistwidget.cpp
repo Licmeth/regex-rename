@@ -1,5 +1,6 @@
 #include "operationlistwidget.h"
 #include "operationcard.h"
+#include "operation.h"
 #include <QLabel>
 
 OperationListWidget::OperationListWidget(QWidget *parent)
@@ -42,14 +43,31 @@ void OperationListWidget::setupUI()
     mainLayout->addWidget(addButton);
 }
 
-QList<QPair<QString, QString>> OperationListWidget::getOperations() const
+QList<std::shared_ptr<Operation>> OperationListWidget::getOperations() const
 {
-    QList<QPair<QString, QString>> operations;
+    QList<std::shared_ptr<Operation>> operations;
     for (OperationCard *card : operationCards) {
-        operations.append(QPair<QString, QString>(
-            card->getOperationType(),
-            card->getOperationValue()
-        ));
+        QString type = card->getOperationType();
+        QString value = card->getOperationValue();
+        
+        std::shared_ptr<Operation> op = nullptr;
+        if (type == "replace") {
+            QString pattern = value;
+            QString replacement = card->getReplacementValue();
+            op = std::make_shared<ReplaceOperation>(pattern, replacement);
+        } else if (type == "prefix") {
+            op = std::make_shared<PrefixOperation>(value);
+        } else if (type == "suffix") {
+            op = std::make_shared<SuffixOperation>(value);
+        } else if (type == "remove_ext") {
+            op = std::make_shared<RemoveExtensionOperation>();
+        } else if (type == "change_ext") {
+            op = std::make_shared<ChangeExtensionOperation>(value);
+        }
+        
+        if (op) {
+            operations.append(op);
+        }
     }
     return operations;
 }
