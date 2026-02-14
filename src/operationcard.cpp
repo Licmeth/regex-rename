@@ -30,6 +30,7 @@ void OperationCard::setupUI()
     operationTypeCombo->addItem(tr("Add Suffix"), "suffix");
     operationTypeCombo->addItem(tr("Insert Text"), "insert");
     operationTypeCombo->addItem(tr("Change Extension"), "change_ext");
+    operationTypeCombo->addItem(tr("Change Case"), "change_case");
     
     typeLayout->addWidget(typeLabel);
     typeLayout->addWidget(operationTypeCombo, 1);
@@ -43,6 +44,19 @@ void OperationCard::setupUI()
     valueLayout->addWidget(valueLabel);
     valueLayout->addWidget(valueEdit, 1);
     mainLayout->addLayout(valueLayout);
+    
+    // Case type combo box (for change_case operation)
+    caseTypeCombo = new QComboBox(this);
+    caseTypeCombo->addItem(tr("Lowercase"), "lowercase");
+    caseTypeCombo->addItem(tr("Uppercase"), "uppercase");
+    caseTypeCombo->addItem(tr("Title Case"), "titlecase");
+    caseTypeCombo->hide();  // Hidden by default
+    QHBoxLayout *caseTypeLayout = new QHBoxLayout();
+    caseTypeLabel = new QLabel(tr("Case Type:"), this);
+    caseTypeLayout->addWidget(caseTypeLabel);
+    caseTypeLayout->addWidget(caseTypeCombo, 1);
+    mainLayout->addLayout(caseTypeLayout);
+    caseTypeLabel->hide();  // Hidden by default
     
     // Replacement row (for replace operation)
     QHBoxLayout *replacementLayout = new QHBoxLayout();
@@ -70,6 +84,8 @@ void OperationCard::setupUI()
     // Connect signals
     connect(operationTypeCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
             this, &OperationCard::onOperationTypeChanged);
+    connect(caseTypeCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
+            this, &OperationCard::operationChanged);
     connect(valueEdit, &QLineEdit::textChanged, this, &OperationCard::onTextChanged);
     connect(replacementEdit, &QLineEdit::textChanged, this, &OperationCard::onTextChanged);
     connect(removeButton, &QPushButton::clicked, this, &OperationCard::removeRequested);
@@ -99,6 +115,11 @@ QString OperationCard::getOperationValue() const
 QString OperationCard::getReplacementValue() const
 {
     return replacementEdit->text();
+}
+
+QString OperationCard::getCaseType() const
+{
+    return caseTypeCombo->currentData().toString();
 }
 
 void OperationCard::setOperationType(const QString &type)
@@ -134,6 +155,8 @@ void OperationCard::updateValueFieldVisibility()
         valueEdit->setPlaceholderText(tr("Enter regex pattern..."));
         replacementLabel->show();
         replacementEdit->show();
+        caseTypeLabel->hide();
+        caseTypeCombo->hide();
     } else if (type == "prefix") {
         valueLabel->setText(tr("Prefix:"));
         valueLabel->show();
@@ -141,6 +164,8 @@ void OperationCard::updateValueFieldVisibility()
         valueEdit->setPlaceholderText(tr("Enter prefix text..."));
         replacementLabel->hide();
         replacementEdit->hide();
+        caseTypeLabel->hide();
+        caseTypeCombo->hide();
     } else if (type == "suffix") {
         valueLabel->setText(tr("Suffix:"));
         valueLabel->show();
@@ -148,6 +173,8 @@ void OperationCard::updateValueFieldVisibility()
         valueEdit->setPlaceholderText(tr("Enter suffix text..."));
         replacementLabel->hide();
         replacementEdit->hide();
+        caseTypeLabel->hide();
+        caseTypeCombo->hide();
     } else if (type == "insert") {
         valueLabel->setText(tr("Position:"));
         valueLabel->show();
@@ -157,6 +184,8 @@ void OperationCard::updateValueFieldVisibility()
         replacementLabel->show();
         replacementEdit->show();
         replacementEdit->setPlaceholderText(tr("Enter text to insert..."));
+        caseTypeLabel->hide();
+        caseTypeCombo->hide();
     } else if (type == "change_ext") {
         valueLabel->setText(tr("New Extension:"));
         valueLabel->show();
@@ -164,5 +193,14 @@ void OperationCard::updateValueFieldVisibility()
         valueEdit->setPlaceholderText(tr("Enter new extension (e.g., .txt)..."));
         replacementLabel->hide();
         replacementEdit->hide();
+        caseTypeLabel->hide();
+        caseTypeCombo->hide();
+    } else if (type == "change_case") {
+        valueLabel->hide();
+        valueEdit->hide();
+        replacementLabel->hide();
+        replacementEdit->hide();
+        caseTypeLabel->show();
+        caseTypeCombo->show();
     }
 }

@@ -21,6 +21,7 @@ public:
     QString getOperationType() const;
     QString getOperationValue() const;
     QString getReplacementValue() const;  // New method for replacement text
+    QString getCaseType() const;  // Get selected case type
     void setOperationType(const QString &type);
     void setOperationValue(const QString &value);
 
@@ -39,9 +40,11 @@ private:
     void updateValueFieldVisibility();
 
     QComboBox *operationTypeCombo;
+    QComboBox *caseTypeCombo;  // For change_case operation
     QLineEdit *valueEdit;
     QLineEdit *replacementEdit;
     QLabel *valueLabel;
+    QLabel *caseTypeLabel;  // Label for case type combo
     QLabel *replacementLabel;
     QPushButton *removeButton;
     QPushButton *moveUpButton;
