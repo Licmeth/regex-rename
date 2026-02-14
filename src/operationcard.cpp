@@ -61,9 +61,12 @@ void OperationCard::setupUI()
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     moveUpButton = new QPushButton(tr("↑"), this);
     moveUpButton->setMaximumWidth(40);
+    moveUpButton->setObjectName("moveUpButton");
     moveDownButton = new QPushButton(tr("↓"), this);
     moveDownButton->setMaximumWidth(40);
+    moveDownButton->setObjectName("moveDownButton");
     removeButton = new QPushButton(tr("Remove"), this);
+    removeButton->setObjectName("removeButton");
     
     buttonLayout->addWidget(moveUpButton);
     buttonLayout->addWidget(moveDownButton);

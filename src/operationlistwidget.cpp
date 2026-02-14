@@ -39,6 +39,7 @@ void OperationListWidget::setupUI()
     
     // Add operation button
     addButton = new QPushButton(tr("+ Add Operation"), this);
+    addButton->setObjectName("addOperationButton");
     connect(addButton, &QPushButton::clicked, this, &OperationListWidget::onAddOperation);
     mainLayout->addWidget(addButton);
 }
