@@ -1,6 +1,5 @@
 #include "operationcard.h"
 #include <QGroupBox>
-#include <QFile>
 
 OperationCard::OperationCard(QWidget *parent)
     : QFrame(parent)
@@ -18,14 +17,6 @@ void OperationCard::setupUI()
 {
     // Set object name for styling
     setObjectName("operationCard");
-    
-    // Load stylesheet from external file
-    QFile styleFile(":/resource/style.qss");
-    if (styleFile.open(QFile::ReadOnly)) {
-        QString styleSheet = QLatin1String(styleFile.readAll());
-        setStyleSheet(styleSheet);
-        styleFile.close();
-    }
     
     // Add margin around the card to separate it from other cards
     setContentsMargins(4, 4, 4, 4);
