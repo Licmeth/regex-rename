@@ -20,6 +20,7 @@ public:
     
     QString getOperationType() const;
     QString getOperationValue() const;
+    QString getReplacementValue() const;  // New method for replacement text
     void setOperationType(const QString &type);
     void setOperationValue(const QString &value);
 

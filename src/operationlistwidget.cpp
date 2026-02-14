@@ -50,15 +50,11 @@ QList<std::shared_ptr<Operation>> OperationListWidget::getOperations() const
         QString type = card->getOperationType();
         QString value = card->getOperationValue();
         
-        std::shared_ptr<Operation> op;
+        std::shared_ptr<Operation> op = nullptr;
         if (type == "replace") {
-            // Split value into pattern and replacement
-            QStringList parts = value.split("|");
-            if (parts.size() >= 2) {
-                QString pattern = parts[0];
-                QString replacement = parts[1];
-                op = std::make_shared<ReplaceOperation>(pattern, replacement);
-            }
+            QString pattern = value;
+            QString replacement = card->getReplacementValue();
+            op = std::make_shared<ReplaceOperation>(pattern, replacement);
         } else if (type == "prefix") {
             op = std::make_shared<PrefixOperation>(value);
         } else if (type == "suffix") {
