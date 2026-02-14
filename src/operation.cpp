@@ -25,17 +25,7 @@ QString ReplaceOperation::perform(const QString &fileName) const
 
 QString PrefixOperation::perform(const QString &fileName) const
 {
-    // Separate basename from extension
-    int dotIndex = fileName.lastIndexOf('.');
-    if (dotIndex > 0) {
-        // Has extension - only add prefix to basename
-        QString baseName = fileName.left(dotIndex);
-        QString extension = fileName.mid(dotIndex);
-        return m_prefix + baseName + extension;
-    } else {
-        // No extension - prefix entire filename
-        return m_prefix + fileName;
-    }
+    return m_prefix + fileName;
 }
 
 QString SuffixOperation::perform(const QString &fileName) const

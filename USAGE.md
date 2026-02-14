@@ -23,7 +23,7 @@ The operations panel displays a list of operation cards. Each card represents a 
 
 **Operation Types:**
 - **Replace**: Use regex patterns to find and replace text in filenames (excluding the extension)
-- **Add Prefix**: Add text to the beginning of the filename (excluding the extension)
+- **Add Prefix**: Add text to the beginning of the filename
 - **Add Suffix**: Add text before the file extension
 - **Insert**: Insert text at a specified position (0-based index, excluding the extension)
 - **Change Extension**: Change the file extension to a new one
@@ -94,7 +94,6 @@ Files with changes are highlighted in bold green text in the "New Name" column.
 2. Add a Prefix operation
 3. Prefix: `2024-02-14_`
 4. Result: "report.pdf" → "2024-02-14_report.pdf"
-5. Note: The extension (.pdf) is preserved and remains at the end
 
 ### Example 3: Insert Text at Position
 **Goal**: Insert a separator at a specific position in the filename
