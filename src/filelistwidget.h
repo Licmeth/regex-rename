@@ -10,6 +10,7 @@
 #include <QList>
 #include <QSet>
 #include <QFutureWatcher>
+#include <QMenu>
 #include <memory>
 
 class Operation;
@@ -40,6 +41,8 @@ signals:
 private slots:
     void onItemSelectionChanged();
     void onPreviewsReady();
+    void showContextMenu(const QPoint &pos);
+    void removeSelectedFiles();
 
 private:
     void setupUI();
