@@ -8,7 +8,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Concurrent)
 
 set(PROJECT_SOURCES
     src/main.cpp
@@ -28,6 +28,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Core
     Qt6::Gui
     Qt6::Widgets
+    Qt6::Concurrent
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
