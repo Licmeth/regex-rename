@@ -7,9 +7,10 @@
 #include <QRegularExpression>
 #include <QtConcurrent>
 #include <QFuture>
+#include <QDebug>
 
 FileListWidget::FileListWidget(QWidget *parent)
-    : QWidget(parent), previewWatcher(nullptr)
+    : QWidget(parent)
 {
     setupUI();
     
@@ -184,6 +185,8 @@ void FileListWidget::onPreviewsReady()
     // If they don't match, files may have been added/removed during computation
     // In this case, we skip the update as it would be inconsistent
     if (results.size() != files.size()) {
+        qWarning() << "Preview results size mismatch: expected" << files.size() 
+                   << "but got" << results.size() << "- skipping update";
         return;
     }
     
