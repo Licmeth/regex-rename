@@ -27,6 +27,7 @@ The operations panel displays a list of operation cards. Each card represents a 
 - **Add Suffix**: Add text before the file extension. Supports auto-numbering tags.
 - **Insert**: Insert text at a specified position (0-based index, excluding the extension). Supports auto-numbering tags.
 - **Change Extension**: Change the file extension to a new one
+- **Change Case**: Convert the filename to lowercase, uppercase, or title case
 
 **Operation Card Controls:**
 - ↑ button: Move operation up in the list (operations are applied in order)
@@ -58,6 +59,7 @@ Files with changes are highlighted in bold green text in the "New Name" column.
      - For Suffix: Enter the suffix text
      - For Insert: Enter position (0-based index) and text to insert
      - For Change Extension: Enter the new extension (e.g., .txt)
+     - For Change Case: Select the case type (lowercase, uppercase, or title case)
 
 3. **Arrange Operations**
    - Use ↑ and ↓ buttons to reorder operations
@@ -133,6 +135,34 @@ Files with changes are highlighted in bold green text in the "New Name" column.
    - "photo (2).jpg" → "IMG_002_photo (2).jpg"
    - "photo (3).jpg" → "IMG_003_photo (3).jpg"
 
+### Example 7: Change Case
+**Goal**: Standardize filename casing
+
+**Lowercase:**
+1. Add files with mixed case names (e.g., "MyDocument.txt", "REPORT.pdf")
+2. Add a Change Case operation
+3. Case Type: Lowercase
+4. Result:
+   - "MyDocument.txt" → "mydocument.txt"
+   - "REPORT.pdf" → "report.pdf"
+
+**Uppercase:**
+1. Add files (e.g., "notes.txt", "readme.md")
+2. Add a Change Case operation
+3. Case Type: Uppercase
+4. Result:
+   - "notes.txt" → "NOTES.txt"
+   - "readme.md" → "README.md"
+
+**Title Case:**
+1. Add files (e.g., "my_document_file.txt", "test report.doc")
+2. Add a Change Case operation
+3. Case Type: Title Case
+4. Result:
+   - "my_document_file.txt" → "My_Document_File.txt"
+   - "test report.doc" → "Test Report.doc"
+5. Note: Title case capitalizes the first letter of each word, where words are separated by spaces, underscores, or other non-letter characters
+
 ## Auto-Numbering Tags
 
 Tags allow you to include auto-incrementing numbers in prefix, suffix, replace text, and insert operations. Tag format: `<zeros:start>`
@@ -162,7 +192,7 @@ You can use multiple tags in the same operation. Example: `<0>-<00:5>_` produces
 - **Operation Order Matters**: Operations are applied sequentially
 - **Regex Power**: Use regex patterns for complex replacements
 - **Auto-Numbering**: Use tags like `<0>`, `<00:5>`, or `<000:14>` for sequential numbering (see Auto-Numbering Tags section above)
-- **Extension Preservation**: All operations except "Change Extension" preserve the file extension - they only modify the basename
+- **Extension Preservation**: All operations except "Change Extension" preserve the file extension - they only modify the basename (including "Change Case" which only affects the filename, not the extension)
 - **Undo**: There is no undo - make sure to preview carefully
 - **Conflicts**: If a target filename already exists, that file will be skipped with an error
 - **File Selection**: You can add more files at any time

@@ -21,6 +21,7 @@ A Qt 6 based batch file renaming application with a graphical user interface. Th
   - Add Suffix
   - Insert (text at specified position)
   - Change Extension
+  - Change Case (lowercase, uppercase, title case)
 - **Split View**: Operations panel on the left, file list on the right
 - **Safe Renaming**: Checks for conflicts and provides error feedback
 
