@@ -22,10 +22,10 @@ The application window is divided into three main sections:
 The operations panel displays a list of operation cards. Each card represents a transformation to apply to filenames.
 
 **Operation Types:**
-- **Replace**: Use regex patterns to find and replace text in filenames
-- **Add Prefix**: Add text to the beginning of the filename
+- **Replace**: Use regex patterns to find and replace text in filenames (excluding the extension)
+- **Add Prefix**: Add text to the beginning of the filename (excluding the extension)
 - **Add Suffix**: Add text before the file extension
-- **Insert**: Insert text at a specified position (0-based index)
+- **Insert**: Insert text at a specified position (0-based index, excluding the extension)
 - **Change Extension**: Change the file extension to a new one
 
 **Operation Card Controls:**
@@ -80,19 +80,21 @@ Files with changes are highlighted in bold green text in the "New Name" column.
 ### Example 1: Replace with Regex
 **Goal**: Replace all spaces with underscores
 
-1. Add files with spaces in their names
+1. Add files with spaces in their names (e.g., "my document.txt")
 2. Add a Replace operation
 3. Pattern: ` ` (space)
 4. Replace with: `_`
-5. Preview shows spaces replaced with underscores
+5. Preview shows spaces replaced with underscores (e.g., "my_document.txt")
+6. Note: The extension (.txt) is preserved and not affected by the replacement
 
 ### Example 2: Add Date Prefix
 **Goal**: Add today's date as a prefix
 
-1. Add files
+1. Add files (e.g., "report.pdf")
 2. Add a Prefix operation
 3. Prefix: `2024-02-14_`
-4. All files now start with the date
+4. Result: "report.pdf" → "2024-02-14_report.pdf"
+5. Note: The extension (.pdf) is preserved and remains at the end
 
 ### Example 3: Insert Text at Position
 **Goal**: Insert a separator at a specific position in the filename
@@ -102,6 +104,7 @@ Files with changes are highlighted in bold green text in the "New Name" column.
 3. Position: `6` (0-based index, after "backup")
 4. Text: `_`
 5. Result: "backup20240214.txt" → "backup_20240214.txt"
+6. Note: The position index is relative to the basename only (excluding .txt extension)
 
 ### Example 4: Change Extension
 **Goal**: Change all .txt files to .md
@@ -125,6 +128,7 @@ Files with changes are highlighted in bold green text in the "New Name" column.
 - **Preview First**: Always check the preview before applying
 - **Operation Order Matters**: Operations are applied sequentially
 - **Regex Power**: Use regex patterns for complex replacements
+- **Extension Preservation**: All operations except "Change Extension" preserve the file extension - they only modify the basename
 - **Undo**: There is no undo - make sure to preview carefully
 - **Conflicts**: If a target filename already exists, that file will be skipped with an error
 - **File Selection**: You can add more files at any time
