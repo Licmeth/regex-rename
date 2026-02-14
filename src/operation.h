@@ -135,4 +135,30 @@ private:
     QString m_newExtension;
 };
 
+/**
+ * @brief Change case operation - changes the case of the filename.
+ * 
+ * Supports lowercase, uppercase, and title case transformations.
+ */
+class ChangeCaseOperation : public Operation
+{
+public:
+    enum CaseType {
+        Lowercase,
+        Uppercase,
+        TitleCase
+    };
+    
+    explicit ChangeCaseOperation(CaseType caseType)
+        : m_caseType(caseType) {}
+    
+    QString perform(const QString &fileName, int fileIndex = 0) const override;
+    QString getType() const override { return "change_case"; }
+    
+    CaseType getCaseType() const { return m_caseType; }
+    
+private:
+    CaseType m_caseType;
+};
+
 #endif // OPERATION_H

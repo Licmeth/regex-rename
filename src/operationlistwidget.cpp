@@ -66,6 +66,19 @@ QList<std::shared_ptr<Operation>> OperationListWidget::getOperations() const
             op = std::make_shared<InsertOperation>(position, text);
         } else if (type == "change_ext") {
             op = std::make_shared<ChangeExtensionOperation>(value);
+        } else if (type == "change_case") {
+            QString caseType = card->getCaseType();
+            ChangeCaseOperation::CaseType ct;
+            if (caseType == "lowercase") {
+                ct = ChangeCaseOperation::Lowercase;
+            } else if (caseType == "uppercase") {
+                ct = ChangeCaseOperation::Uppercase;
+            } else if (caseType == "titlecase") {
+                ct = ChangeCaseOperation::TitleCase;
+            } else {
+                ct = ChangeCaseOperation::Lowercase;  // Default
+            }
+            op = std::make_shared<ChangeCaseOperation>(ct);
         }
         
         if (op) {
