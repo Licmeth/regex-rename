@@ -6,6 +6,7 @@
 #include <QFile>
 #include <QDir>
 #include <QRegularExpression>
+#include <QMenu>
 #include <QtConcurrent>
 #include <QFuture>
 #include <QDebug>
@@ -37,10 +38,11 @@ void FileListWidget::setupUI()
     // Tree widget
     treeWidget = new QTreeWidget(this);
     treeWidget->setColumnCount(3);
-    treeWidget->setHeaderLabels({tr("File Path"), tr("Original Name"), tr("New Name")});
+    treeWidget->setHeaderLabels({tr("Original Name"), tr("New Name"), tr("File Path")});
     treeWidget->setAlternatingRowColors(true);
     treeWidget->setSortingEnabled(false);
     treeWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     
     // Set column widths
     // Use Interactive mode to allow manual column resizing by the user
@@ -51,12 +53,14 @@ void FileListWidget::setupUI()
     treeWidget->header()->setSectionResizeMode(2, QHeaderView::Stretch);
     
     // Set reasonable initial column widths
-    treeWidget->setColumnWidth(0, 300);  // File Path column
-    treeWidget->setColumnWidth(1, 200);  // Original Name column
-    // Column 2 (New Name) will stretch to fill remaining space
+    treeWidget->setColumnWidth(0, 200);  // Original Name column
+    treeWidget->setColumnWidth(1, 200);  // New Name column
+    // Column 2 (File Path) will stretch to fill remaining space
     
     connect(treeWidget, &QTreeWidget::itemSelectionChanged,
             this, &FileListWidget::onItemSelectionChanged);
+    connect(treeWidget, &QTreeWidget::customContextMenuRequested,
+            this, &FileListWidget::showContextMenu);
     
     mainLayout->addWidget(treeWidget, 1);
 }
@@ -87,9 +91,9 @@ void FileListWidget::addFiles(const QStringList &filePaths)
         entry.newName = fileInfo.fileName();
         
         QTreeWidgetItem *item = new QTreeWidgetItem(treeWidget);
-        item->setText(0, entry.directory);
-        item->setText(1, entry.originalName);
-        item->setText(2, entry.newName);
+        item->setText(0, entry.originalName);
+        item->setText(1, entry.newName);
+        item->setText(2, entry.directory);
         entry.item = item;
         
         files.append(entry);
@@ -176,11 +180,11 @@ int FileListWidget::applyRename(QStringList &errors)
         if (file.rename(newPath)) {
             files[i].fullPath = newPath;
             files[i].originalName = files[i].newName;
-            files[i].item->setText(1, files[i].newName);
-            files[i].item->setForeground(2, QBrush(Qt::black));
-            QFont font = files[i].item->font(2);
+            files[i].item->setText(0, files[i].newName);
+            files[i].item->setForeground(1, QBrush(Qt::black));
+            QFont font = files[i].item->font(1);
             font.setBold(false);
-            files[i].item->setFont(2, font);
+            files[i].item->setFont(1, font);
             successCount++;
         } else {
             errors.append(tr("Failed to rename '%1': %2")
@@ -218,19 +222,19 @@ void FileListWidget::onPreviewsReady()
     for (int i = 0; i < files.size(); ++i) {
         QString newName = results[i];
         files[i].newName = newName;
-        files[i].item->setText(2, newName);
+        files[i].item->setText(1, newName);
         
         // Highlight changes
         if (newName != files[i].originalName) {
-            files[i].item->setForeground(2, QBrush(Qt::darkGreen));
-            QFont font = files[i].item->font(2);
+            files[i].item->setForeground(1, QBrush(Qt::darkGreen));
+            QFont font = files[i].item->font(1);
             font.setBold(true);
-            files[i].item->setFont(2, font);
+            files[i].item->setFont(1, font);
         } else {
-            files[i].item->setForeground(2, QBrush(Qt::black));
-            QFont font = files[i].item->font(2);
+            files[i].item->setForeground(1, QBrush(Qt::black));
+            QFont font = files[i].item->font(1);
             font.setBold(false);
-            files[i].item->setFont(2, font);
+            files[i].item->setFont(1, font);
         }
     }
     
@@ -251,4 +255,57 @@ QString FileListWidget::applyOperations(const QString &fileName,
     }
     
     return result;
+}
+
+void FileListWidget::showContextMenu(const QPoint &pos)
+{
+    // Only show context menu if there are selected items
+    QList<QTreeWidgetItem*> selectedItems = treeWidget->selectedItems();
+    if (selectedItems.isEmpty()) {
+        return;
+    }
+    
+    QMenu contextMenu(this);
+    QAction *removeAction = contextMenu.addAction(tr("Remove Selected"));
+    
+    QAction *selectedAction = contextMenu.exec(treeWidget->mapToGlobal(pos));
+    if (selectedAction == removeAction) {
+        removeSelectedFiles();
+    }
+}
+
+void FileListWidget::removeSelectedFiles()
+{
+    QList<QTreeWidgetItem*> selectedItems = treeWidget->selectedItems();
+    if (selectedItems.isEmpty()) {
+        return;
+    }
+    
+    // Disable updates during batch removal
+    treeWidget->setUpdatesEnabled(false);
+    
+    // Create a set of items to remove for quick lookup
+    QSet<QTreeWidgetItem*> itemsToRemove;
+    for (QTreeWidgetItem *item : selectedItems) {
+        itemsToRemove.insert(item);
+    }
+    
+    // Remove files from the list in reverse order to maintain indices
+    for (int i = files.size() - 1; i >= 0; --i) {
+        if (itemsToRemove.contains(files[i].item)) {
+            // Remove from the set for fast duplicate checking
+            filePathsSet.remove(files[i].fullPath);
+            
+            // Remove the tree widget item
+            delete files[i].item;
+            
+            // Remove from the files list
+            files.removeAt(i);
+        }
+    }
+    
+    // Re-enable updates
+    treeWidget->setUpdatesEnabled(true);
+    
+    emit filesChanged();
 }
