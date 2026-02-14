@@ -106,7 +106,7 @@ void OperationListWidget::onMoveOperationUp()
     int index = operationCards.indexOf(card);
     if (index > 0) {
         // Swap in list
-        operationCards.swap(index, index - 1);
+        operationCards.swapItemsAt(index, index - 1);
         
         // Swap in layout
         operationsLayout->removeWidget(card);
@@ -125,7 +125,7 @@ void OperationListWidget::onMoveOperationDown()
     int index = operationCards.indexOf(card);
     if (index >= 0 && index < operationCards.size() - 1) {
         // Swap in list
-        operationCards.swap(index, index + 1);
+        operationCards.swapItemsAt(index, index + 1);
         
         // Swap in layout
         operationsLayout->removeWidget(card);
