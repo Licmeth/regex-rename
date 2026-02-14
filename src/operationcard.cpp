@@ -4,6 +4,12 @@
 OperationCard::OperationCard(QWidget *parent)
     : QFrame(parent)
 {
+    // Create debounce timer for text input
+    debounceTimer = new QTimer(this);
+    debounceTimer->setSingleShot(true);
+    debounceTimer->setInterval(300); // 300ms delay after last keystroke
+    connect(debounceTimer, &QTimer::timeout, this, &OperationCard::operationChanged);
+    
     setupUI();
 }
 
@@ -64,13 +70,20 @@ void OperationCard::setupUI()
     // Connect signals
     connect(operationTypeCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
             this, &OperationCard::onOperationTypeChanged);
-    connect(valueEdit, &QLineEdit::textChanged, this, &OperationCard::operationChanged);
-    connect(replacementEdit, &QLineEdit::textChanged, this, &OperationCard::operationChanged);
+    connect(valueEdit, &QLineEdit::textChanged, this, &OperationCard::onTextChanged);
+    connect(replacementEdit, &QLineEdit::textChanged, this, &OperationCard::onTextChanged);
     connect(removeButton, &QPushButton::clicked, this, &OperationCard::removeRequested);
     connect(moveUpButton, &QPushButton::clicked, this, &OperationCard::moveUpRequested);
     connect(moveDownButton, &QPushButton::clicked, this, &OperationCard::moveDownRequested);
     
     updateValueFieldVisibility();
+}
+
+void OperationCard::onTextChanged()
+{
+    // Restart the debounce timer on each keystroke
+    // This delays the operationChanged signal until user stops typing
+    debounceTimer->start();
 }
 
 QString OperationCard::getOperationType() const

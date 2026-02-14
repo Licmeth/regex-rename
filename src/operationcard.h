@@ -9,6 +9,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QFrame>
+#include <QTimer>
 
 class OperationCard : public QFrame
 {
@@ -30,6 +31,7 @@ signals:
 
 private slots:
     void onOperationTypeChanged(int index);
+    void onTextChanged();
 
 private:
     void setupUI();
@@ -43,6 +45,7 @@ private:
     QPushButton *removeButton;
     QPushButton *moveUpButton;
     QPushButton *moveDownButton;
+    QTimer *debounceTimer;
 };
 
 #endif // OPERATIONCARD_H
