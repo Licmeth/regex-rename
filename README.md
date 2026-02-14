@@ -18,7 +18,7 @@ A Qt 6 based batch file renaming application with a graphical user interface. Th
   - Replace (using regex patterns)
   - Add Prefix
   - Add Suffix
-  - Remove Extension
+  - Insert (text at specified position)
   - Change Extension
 - **Split View**: Operations panel on the left, file list on the right
 - **Safe Renaming**: Checks for conflicts and provides error feedback

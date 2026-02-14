@@ -29,14 +29,21 @@ QString SuffixOperation::perform(const QString &fileName) const
     }
 }
 
-QString RemoveExtensionOperation::perform(const QString &fileName) const
+QString InsertOperation::perform(const QString &fileName) const
 {
-    // Remove extension, but preserve dotfiles (like .bashrc)
-    int dotIndex = fileName.lastIndexOf('.');
-    if (dotIndex > 0) {
-        return fileName.left(dotIndex);
+    // Insert text at the specified position
+    // If position is negative or beyond the string length, handle gracefully
+    int pos = m_position;
+    if (pos < 0) {
+        pos = 0;
     }
-    return fileName;
+    if (pos > fileName.length()) {
+        pos = fileName.length();
+    }
+    
+    QString result = fileName;
+    result.insert(pos, m_text);
+    return result;
 }
 
 QString ChangeExtensionOperation::perform(const QString &fileName) const

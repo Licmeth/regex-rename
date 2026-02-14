@@ -88,15 +88,23 @@ private:
 };
 
 /**
- * @brief Remove extension operation - removes the file extension.
+ * @brief Insert operation - inserts text at a specified position.
  */
-class RemoveExtensionOperation : public Operation
+class InsertOperation : public Operation
 {
 public:
-    RemoveExtensionOperation() = default;
+    InsertOperation(int position, const QString &text)
+        : m_position(position), m_text(text) {}
     
     QString perform(const QString &fileName) const override;
-    QString getType() const override { return "remove_ext"; }
+    QString getType() const override { return "insert"; }
+    
+    int getPosition() const { return m_position; }
+    QString getText() const { return m_text; }
+    
+private:
+    int m_position;
+    QString m_text;
 };
 
 /**

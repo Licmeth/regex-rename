@@ -25,7 +25,7 @@ The operations panel displays a list of operation cards. Each card represents a 
 - **Replace**: Use regex patterns to find and replace text in filenames
 - **Add Prefix**: Add text to the beginning of the filename
 - **Add Suffix**: Add text before the file extension
-- **Remove Extension**: Remove the file extension
+- **Insert**: Insert text at a specified position (0-based index)
 - **Change Extension**: Change the file extension to a new one
 
 **Operation Card Controls:**
@@ -56,6 +56,7 @@ Files with changes are highlighted in bold green text in the "New Name" column.
      - For Replace: Enter regex pattern and replacement text
      - For Prefix: Enter the prefix text
      - For Suffix: Enter the suffix text
+     - For Insert: Enter position (0-based index) and text to insert
      - For Change Extension: Enter the new extension (e.g., .txt)
 
 3. **Arrange Operations**
@@ -93,7 +94,16 @@ Files with changes are highlighted in bold green text in the "New Name" column.
 3. Prefix: `2024-02-14_`
 4. All files now start with the date
 
-### Example 3: Change Extension
+### Example 3: Insert Text at Position
+**Goal**: Insert a separator at a specific position in the filename
+
+1. Add files like "backup20240214.txt"
+2. Add an Insert operation
+3. Position: `6` (0-based index, after "backup")
+4. Text: `_`
+5. Result: "backup20240214.txt" → "backup_20240214.txt"
+
+### Example 4: Change Extension
 **Goal**: Change all .txt files to .md
 
 1. Add .txt files
@@ -101,7 +111,7 @@ Files with changes are highlighted in bold green text in the "New Name" column.
 3. New Extension: `.md` or `md`
 4. Files now have .md extension
 
-### Example 4: Complex Renaming
+### Example 5: Complex Renaming
 **Goal**: Replace spaces, add prefix, and change extension
 
 1. Add files like "my document.txt"
