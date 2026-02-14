@@ -1,4 +1,5 @@
 #include "filelistwidget.h"
+#include "operation.h"
 #include <QVBoxLayout>
 #include <QHeaderView>
 #include <QLabel>
@@ -97,7 +98,7 @@ void FileListWidget::clearFiles()
     emit filesChanged();
 }
 
-void FileListWidget::updatePreviews(const QList<QPair<QString, QString>> &operations)
+void FileListWidget::updatePreviews(const QList<std::shared_ptr<Operation>> &operations)
 {
     // Cancel any pending preview computation
     if (previewWatcher->isRunning()) {
@@ -212,55 +213,13 @@ void FileListWidget::onPreviewsReady()
 }
 
 QString FileListWidget::applyOperations(const QString &fileName, 
-                                       const QList<QPair<QString, QString>> &operations)
+                                       const QList<std::shared_ptr<Operation>> &operations)
 {
     QString result = fileName;
     
     for (const auto &op : operations) {
-        QString type = op.first;
-        QString value = op.second;
-        
-        if (type == "replace") {
-            // Split value into pattern and replacement
-            QStringList parts = value.split("|");
-            if (parts.size() >= 2) {
-                QString pattern = parts[0];
-                QString replacement = parts[1];
-                
-                QRegularExpression regex(pattern);
-                if (regex.isValid()) {
-                    result = result.replace(regex, replacement);
-                }
-            }
-        } else if (type == "prefix") {
-            result = value + result;
-        } else if (type == "suffix") {
-            // Add suffix before extension
-            // Note: dotIndex > 0 ensures we don't treat dotfiles (like .bashrc) as having extensions
-            int dotIndex = result.lastIndexOf('.');
-            if (dotIndex > 0) {
-                result = result.left(dotIndex) + value + result.mid(dotIndex);
-            } else {
-                result = result + value;
-            }
-        } else if (type == "remove_ext") {
-            // Remove extension, but preserve dotfiles (like .bashrc)
-            int dotIndex = result.lastIndexOf('.');
-            if (dotIndex > 0) {
-                result = result.left(dotIndex);
-            }
-        } else if (type == "change_ext") {
-            // Change extension, but preserve dotfiles (like .bashrc)
-            int dotIndex = result.lastIndexOf('.');
-            if (dotIndex > 0) {
-                result = result.left(dotIndex);
-            }
-            if (!value.isEmpty()) {
-                if (!value.startsWith('.')) {
-                    result += '.';
-                }
-                result += value;
-            }
+        if (op) {
+            result = op->perform(result);
         }
     }
     
