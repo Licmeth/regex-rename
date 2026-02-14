@@ -10,21 +10,6 @@ A Qt 6 based batch file renaming application with a graphical user interface. Th
 - Preview the changes before applying them
 - Apply the renaming operations safely
 
-## Features
-
-- **Visual Operations**: Add, remove, and reorder operations using a card-based interface
-- **Real-time Preview**: See how your files will be renamed before applying changes
-- **Auto-Numbering**: Use tags like `<0>`, `<00:5>`, or `<000:14>` for sequential file numbering
-- **Multiple Operations**: Support for:
-  - Replace (using regex patterns)
-  - Add Prefix
-  - Add Suffix
-  - Insert (text at specified position)
-  - Change Extension
-  - Change Case (lowercase, uppercase, title case)
-- **Split View**: Operations panel on the left, file list on the right
-- **Safe Renaming**: Checks for conflicts and provides error feedback
-
 ## Requirements
 
 - CMake 3.16 or higher
@@ -50,11 +35,48 @@ After building, run the application:
 
 ## Usage
 
-1. **Add Files**: Use File → Add Files to select files you want to rename
-2. **Add Operations**: Click "+ Add Operation" to add renaming operations
-3. **Configure Operations**: Select operation type and configure parameters
-4. **Preview**: See the new filenames in the "New Name" column
-5. **Apply**: Use File → Apply Rename (or Ctrl+R) to execute the renaming
+### Quick Start
+
+1. **Add Files**: Click File → Add Files (Ctrl+O) to select files for renaming
+2. **Add Operations**: Click "+ Add Operation" to create transformation operations
+3. **Configure**: Choose operation type and set parameters:
+   - **Replace**: Use regex patterns to find and replace text
+   - **Prefix/Suffix**: Add text to the beginning or end of filenames
+   - **Insert**: Add text at specific position
+   - **Change Extension**: Modify file extensions
+   - **Change Case**: Convert to lowercase, uppercase, or title case
+4. **Reorder**: Use ↑↓ buttons to arrange operation order (applied top to bottom)
+5. **Preview**: View results in the "New Name" column (changes shown in bold green)
+6. **Apply**: Execute renaming with File → Apply Rename (Ctrl+R)
+
+### Auto-Numbering
+
+Use tags in operations for sequential numbering:
+- `<0>` - Single digit: 1, 2, 3...
+- `<00>` - Two digits: 01, 02, 03...
+- `<000:14>` - Three digits starting at 14: 014, 015, 016...
+
+### Examples
+
+**Replace spaces with underscores:**
+- Add Replace operation: pattern ` `, replace with `_`
+- "my document.txt" → "my_document.txt"
+
+**Add numbered prefix:**
+- Add Prefix operation: `photo_<00:1>_`
+- "image.jpg" → "photo_01_image.jpg"
+
+**Combine operations:**
+1. Replace: ` ` → `_`
+2. Prefix: `backup_`
+3. Change Extension: `.bak`
+- "my document.txt" → "backup_my_document.bak"
+
+### Tips
+
+- Operations preserve file extensions (except Change Extension)
+- Always preview before applying (no undo available)
+- Files are processed in order; conflicts are skipped
 
 ## License
 
