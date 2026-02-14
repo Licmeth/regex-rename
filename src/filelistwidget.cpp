@@ -267,11 +267,9 @@ void FileListWidget::showContextMenu(const QPoint &pos)
     
     QMenu contextMenu(this);
     QAction *removeAction = contextMenu.addAction(tr("Remove Selected"));
+    connect(removeAction, &QAction::triggered, this, &FileListWidget::removeSelectedFiles);
     
-    QAction *selectedAction = contextMenu.exec(treeWidget->mapToGlobal(pos));
-    if (selectedAction == removeAction) {
-        removeSelectedFiles();
-    }
+    contextMenu.exec(treeWidget->mapToGlobal(pos));
 }
 
 void FileListWidget::removeSelectedFiles()
@@ -293,7 +291,7 @@ void FileListWidget::removeSelectedFiles()
     // Remove files from the list in reverse order to maintain indices
     for (int i = files.size() - 1; i >= 0; --i) {
         if (itemsToRemove.contains(files[i].item)) {
-            // Remove from the set for fast duplicate checking
+            // Update filePathsSet to reflect removal
             filePathsSet.remove(files[i].fullPath);
             
             // Remove the tree widget item
