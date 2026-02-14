@@ -28,7 +28,7 @@ void OperationCard::setupUI()
     operationTypeCombo->addItem(tr("Replace"), "replace");
     operationTypeCombo->addItem(tr("Add Prefix"), "prefix");
     operationTypeCombo->addItem(tr("Add Suffix"), "suffix");
-    operationTypeCombo->addItem(tr("Remove Extension"), "remove_ext");
+    operationTypeCombo->addItem(tr("Insert"), "insert");
     operationTypeCombo->addItem(tr("Change Extension"), "change_ext");
     
     typeLayout->addWidget(typeLabel);
@@ -148,11 +148,15 @@ void OperationCard::updateValueFieldVisibility()
         valueEdit->setPlaceholderText(tr("Enter suffix text..."));
         replacementLabel->hide();
         replacementEdit->hide();
-    } else if (type == "remove_ext") {
-        valueLabel->hide();
-        valueEdit->hide();
-        replacementLabel->hide();
-        replacementEdit->hide();
+    } else if (type == "insert") {
+        valueLabel->setText(tr("Position:"));
+        valueLabel->show();
+        valueEdit->show();
+        valueEdit->setPlaceholderText(tr("Enter position (0-based index)..."));
+        replacementLabel->setText(tr("Text:"));
+        replacementLabel->show();
+        replacementEdit->show();
+        replacementEdit->setPlaceholderText(tr("Enter text to insert..."));
     } else if (type == "change_ext") {
         valueLabel->setText(tr("New Extension:"));
         valueLabel->show();

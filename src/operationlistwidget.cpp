@@ -59,8 +59,10 @@ QList<std::shared_ptr<Operation>> OperationListWidget::getOperations() const
             op = std::make_shared<PrefixOperation>(value);
         } else if (type == "suffix") {
             op = std::make_shared<SuffixOperation>(value);
-        } else if (type == "remove_ext") {
-            op = std::make_shared<RemoveExtensionOperation>();
+        } else if (type == "insert") {
+            int position = value.toInt();
+            QString text = card->getReplacementValue();
+            op = std::make_shared<InsertOperation>(position, text);
         } else if (type == "change_ext") {
             op = std::make_shared<ChangeExtensionOperation>(value);
         }
