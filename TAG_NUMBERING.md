@@ -56,16 +56,16 @@ If `:start` is omitted, numbering starts from 1 by default.
 Add a numbered prefix to files:
 
 **Input files:**
-- photo.jpg
-- photo.jpg (duplicate)
-- photo.jpg (another)
+- photo1.jpg
+- photo2.jpg
+- photo3.jpg
 
 **Prefix:** `IMG_<000:1>_`
 
 **Output:**
-- IMG_001_photo.jpg
-- IMG_002_photo.jpg
-- IMG_003_photo.jpg
+- IMG_001_photo1.jpg
+- IMG_002_photo2.jpg
+- IMG_003_photo3.jpg
 
 ### Suffix Operation
 
@@ -73,15 +73,15 @@ Add a numbered suffix before the extension:
 
 **Input files:**
 - document.pdf
-- document.pdf (copy)
-- document.pdf (final)
+- document_copy.pdf
+- document_final.pdf
 
 **Suffix:** `_v<00>`
 
 **Output:**
 - document_v01.pdf
-- document_v02.pdf
-- document_v03.pdf
+- document_copy_v02.pdf
+- document_final_v03.pdf
 
 ### Replace Operation
 

@@ -123,7 +123,7 @@ void FileListWidget::updatePreviews(const QList<std::shared_ptr<Operation>> &ope
         // Extract the file index from a specially formatted string
         // Format: "index|filename"
         int sepIndex = fileName.indexOf('|');
-        if (sepIndex > 0) {
+        if (sepIndex >= 0) {
             int fileIndex = fileName.left(sepIndex).toInt();
             QString actualFileName = fileName.mid(sepIndex + 1);
             return FileListWidget::applyOperations(actualFileName, operations, fileIndex);
