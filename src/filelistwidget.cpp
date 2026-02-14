@@ -183,6 +183,7 @@ QString FileListWidget::applyOperations(const QString &fileName,
             result = value + result;
         } else if (type == "suffix") {
             // Add suffix before extension
+            // Note: dotIndex > 0 ensures we don't treat dotfiles (like .bashrc) as having extensions
             int dotIndex = result.lastIndexOf('.');
             if (dotIndex > 0) {
                 result = result.left(dotIndex) + value + result.mid(dotIndex);
@@ -190,11 +191,13 @@ QString FileListWidget::applyOperations(const QString &fileName,
                 result = result + value;
             }
         } else if (type == "remove_ext") {
+            // Remove extension, but preserve dotfiles (like .bashrc)
             int dotIndex = result.lastIndexOf('.');
             if (dotIndex > 0) {
                 result = result.left(dotIndex);
             }
         } else if (type == "change_ext") {
+            // Change extension, but preserve dotfiles (like .bashrc)
             int dotIndex = result.lastIndexOf('.');
             if (dotIndex > 0) {
                 result = result.left(dotIndex);
