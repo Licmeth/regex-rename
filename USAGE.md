@@ -95,13 +95,13 @@ Files with changes are highlighted in bold green text in the "New Name" column.
 4. All files now start with the date
 
 ### Example 3: Insert Text at Position
-**Goal**: Insert text at a specific position in the filename
+**Goal**: Insert a separator at a specific position in the filename
 
-1. Add files like "document.txt"
+1. Add files like "backup20240214.txt"
 2. Add an Insert operation
-3. Position: `3` (0-based index)
-4. Text: `_new`
-5. Result: "document.txt" → "doc_newument.txt"
+3. Position: `6` (0-based index, after "backup")
+4. Text: `_`
+5. Result: "backup20240214.txt" → "backup_20240214.txt"
 
 ### Example 4: Change Extension
 **Goal**: Change all .txt files to .md

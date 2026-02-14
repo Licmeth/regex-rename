@@ -28,7 +28,7 @@ void OperationCard::setupUI()
     operationTypeCombo->addItem(tr("Replace"), "replace");
     operationTypeCombo->addItem(tr("Add Prefix"), "prefix");
     operationTypeCombo->addItem(tr("Add Suffix"), "suffix");
-    operationTypeCombo->addItem(tr("Insert"), "insert");
+    operationTypeCombo->addItem(tr("Insert Text"), "insert");
     operationTypeCombo->addItem(tr("Change Extension"), "change_ext");
     
     typeLayout->addWidget(typeLabel);
