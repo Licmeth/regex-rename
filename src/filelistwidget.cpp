@@ -43,10 +43,16 @@ void FileListWidget::setupUI()
     treeWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
     
     // Set column widths
+    // Use Interactive mode instead of ResizeToContents to avoid expensive
+    // recalculation during resize/splitter movement
     treeWidget->header()->setStretchLastSection(false);
     treeWidget->header()->setSectionResizeMode(0, QHeaderView::Stretch);
-    treeWidget->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
-    treeWidget->header()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+    treeWidget->header()->setSectionResizeMode(1, QHeaderView::Interactive);
+    treeWidget->header()->setSectionResizeMode(2, QHeaderView::Interactive);
+    
+    // Set reasonable initial column widths
+    treeWidget->setColumnWidth(1, 200);  // Original Name column
+    treeWidget->setColumnWidth(2, 200);  // New Name column
     
     connect(treeWidget, &QTreeWidget::itemSelectionChanged,
             this, &FileListWidget::onItemSelectionChanged);
