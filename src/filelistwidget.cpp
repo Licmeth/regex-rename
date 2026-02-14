@@ -56,22 +56,22 @@ void FileListWidget::setupUI()
 
 void FileListWidget::addFiles(const QStringList &filePaths)
 {
+    // Disable updates during batch addition to improve performance
+    treeWidget->setUpdatesEnabled(false);
+    
+    // Reserve space in the files list if we know the approximate size
+    files.reserve(files.size() + filePaths.size());
+    
     for (const QString &filePath : filePaths) {
         QFileInfo fileInfo(filePath);
         if (!fileInfo.exists() || !fileInfo.isFile()) {
             continue;
         }
         
-        // Check if file already exists in list
-        bool exists = false;
-        for (const FileEntry &entry : files) {
-            if (entry.fullPath == filePath) {
-                exists = true;
-                break;
-            }
+        // Fast duplicate check using QSet (O(1) instead of O(n))
+        if (filePathsSet.contains(filePath)) {
+            continue;
         }
-        
-        if (exists) continue;
         
         FileEntry entry;
         entry.fullPath = filePath;
@@ -86,7 +86,11 @@ void FileListWidget::addFiles(const QStringList &filePaths)
         entry.item = item;
         
         files.append(entry);
+        filePathsSet.insert(filePath);
     }
+    
+    // Re-enable updates and trigger a single repaint
+    treeWidget->setUpdatesEnabled(true);
     
     emit filesChanged();
 }
@@ -95,6 +99,7 @@ void FileListWidget::clearFiles()
 {
     treeWidget->clear();
     files.clear();
+    filePathsSet.clear();
     emit filesChanged();
 }
 
@@ -191,6 +196,9 @@ void FileListWidget::onPreviewsReady()
         return;
     }
     
+    // Disable updates during batch update to improve performance
+    treeWidget->setUpdatesEnabled(false);
+    
     // Update UI with the computed new names (this runs in the main thread)
     for (int i = 0; i < files.size(); ++i) {
         QString newName = results[i];
@@ -210,6 +218,9 @@ void FileListWidget::onPreviewsReady()
             files[i].item->setFont(2, font);
         }
     }
+    
+    // Re-enable updates and trigger a single repaint
+    treeWidget->setUpdatesEnabled(true);
 }
 
 QString FileListWidget::applyOperations(const QString &fileName, 

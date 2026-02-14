@@ -8,6 +8,7 @@
 #include <QFileInfo>
 #include <QPair>
 #include <QList>
+#include <QSet>
 #include <QFutureWatcher>
 #include <memory>
 
@@ -47,6 +48,7 @@ private:
     
     QTreeWidget *treeWidget;
     QList<FileEntry> files;
+    QSet<QString> filePathsSet; // For fast duplicate checking
     QFutureWatcher<QString> *previewWatcher;
 };
 
