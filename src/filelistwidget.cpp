@@ -120,14 +120,22 @@ void FileListWidget::updatePreviews(const QList<std::shared_ptr<Operation>> &ope
     // Note: We capture 'operations' by value to ensure it remains valid
     // We don't capture 'this' as applyOperations is now static and thread-safe
     auto applyOpsFunc = [operations](const QString &fileName) -> QString {
-        return FileListWidget::applyOperations(fileName, operations);
+        // Extract the file index from a specially formatted string
+        // Format: "index|filename"
+        int sepIndex = fileName.indexOf('|');
+        if (sepIndex > 0) {
+            int fileIndex = fileName.left(sepIndex).toInt();
+            QString actualFileName = fileName.mid(sepIndex + 1);
+            return FileListWidget::applyOperations(actualFileName, operations, fileIndex);
+        }
+        return FileListWidget::applyOperations(fileName, operations, 0);
     };
     
-    // Extract original filenames for parallel processing
+    // Extract original filenames for parallel processing, prepending the index
     QList<QString> originalNames;
     originalNames.reserve(files.size());
-    for (const auto &file : files) {
-        originalNames.append(file.originalName);
+    for (int i = 0; i < files.size(); ++i) {
+        originalNames.append(QString("%1|%2").arg(i).arg(files[i].originalName));
     }
     
     // Start parallel computation of new names
@@ -224,13 +232,14 @@ void FileListWidget::onPreviewsReady()
 }
 
 QString FileListWidget::applyOperations(const QString &fileName, 
-                                       const QList<std::shared_ptr<Operation>> &operations)
+                                       const QList<std::shared_ptr<Operation>> &operations,
+                                       int fileIndex)
 {
     QString result = fileName;
     
     for (const auto &op : operations) {
         if (op) {
-            result = op->perform(result);
+            result = op->perform(result, fileIndex);
         }
     }
     

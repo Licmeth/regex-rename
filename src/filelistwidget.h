@@ -44,7 +44,8 @@ private slots:
 private:
     void setupUI();
     static QString applyOperations(const QString &fileName, 
-                                   const QList<std::shared_ptr<Operation>> &operations);
+                                   const QList<std::shared_ptr<Operation>> &operations,
+                                   int fileIndex = 0);
     
     QTreeWidget *treeWidget;
     QList<FileEntry> files;
