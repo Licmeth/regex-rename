@@ -10,6 +10,13 @@ MainWindow::MainWindow(QWidget *parent)
 {
     setWindowTitle("Regex Rename - Batch File Renamer");
     
+    // Create debounce timer for preview updates
+    // This prevents rapid successive updates during resize/splitter movement
+    previewDebounceTimer = new QTimer(this);
+    previewDebounceTimer->setSingleShot(true);
+    previewDebounceTimer->setInterval(150); // 150ms delay
+    connect(previewDebounceTimer, &QTimer::timeout, this, &MainWindow::performPreviewUpdate);
+    
     setupMenuBar();
     setupUI();
 }
@@ -72,10 +79,11 @@ void MainWindow::setupUI()
     setCentralWidget(splitter);
     
     // Connect operations changes to preview updates
+    // Use the debounced update request method
     connect(operationList, &OperationListWidget::operationsChanged, 
-            this, &MainWindow::updatePreviews);
+            this, &MainWindow::onUpdatePreviewsRequested);
     connect(fileList, &FileListWidget::filesChanged,
-            this, &MainWindow::updatePreviews);
+            this, &MainWindow::onUpdatePreviewsRequested);
 }
 
 void MainWindow::onAddFiles()
@@ -121,6 +129,19 @@ void MainWindow::onAbout()
            "<p>A batch file renaming tool with preview functionality.</p>"
            "<p>Use operations to define how files should be renamed, "
            "preview the changes, and apply them when ready.</p>"));
+}
+
+void MainWindow::onUpdatePreviewsRequested()
+{
+    // Restart the debounce timer on each request
+    // This delays the actual preview update until requests stop coming
+    previewDebounceTimer->start();
+}
+
+void MainWindow::performPreviewUpdate()
+{
+    // This is the actual update that happens after debouncing
+    updatePreviews();
 }
 
 void MainWindow::updatePreviews()
