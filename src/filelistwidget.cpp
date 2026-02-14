@@ -111,14 +111,13 @@ void FileListWidget::updatePreviews(const QList<QPair<QString, QString>> &operat
     
     // Create a lambda that captures operations and applies them to a filename
     // Note: We capture 'operations' by value to ensure it remains valid
-    // 'this' is safe because QFutureWatcher is a child of this widget and will be
-    // destroyed before the parent, ensuring no dangling pointer access
-    auto applyOpsFunc = [operations, this](const QString &fileName) -> QString {
-        return this->applyOperations(fileName, operations);
+    // We don't capture 'this' as applyOperations is now static and thread-safe
+    auto applyOpsFunc = [operations](const QString &fileName) -> QString {
+        return FileListWidget::applyOperations(fileName, operations);
     };
     
     // Extract original filenames for parallel processing
-    QVector<QString> originalNames;
+    QList<QString> originalNames;
     originalNames.reserve(files.size());
     for (const auto &file : files) {
         originalNames.append(file.originalName);

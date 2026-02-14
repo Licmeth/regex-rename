@@ -9,7 +9,6 @@
 #include <QPair>
 #include <QList>
 #include <QFutureWatcher>
-#include <QVector>
 
 struct FileEntry {
     QString fullPath;
@@ -40,8 +39,8 @@ private slots:
 
 private:
     void setupUI();
-    QString applyOperations(const QString &fileName, 
-                           const QList<QPair<QString, QString>> &operations);
+    static QString applyOperations(const QString &fileName, 
+                                   const QList<QPair<QString, QString>> &operations);
     
     QTreeWidget *treeWidget;
     QList<FileEntry> files;
