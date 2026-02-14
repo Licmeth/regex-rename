@@ -5,16 +5,37 @@ QString ReplaceOperation::perform(const QString &fileName) const
 {
     QRegularExpression regex(m_pattern);
     if (regex.isValid()) {
-        QString result = fileName;
-        result.replace(regex, m_replacement);
-        return result;
+        // Separate basename from extension
+        int dotIndex = fileName.lastIndexOf('.');
+        if (dotIndex > 0) {
+            // Has extension - only replace in basename
+            QString baseName = fileName.left(dotIndex);
+            QString extension = fileName.mid(dotIndex);
+            baseName.replace(regex, m_replacement);
+            return baseName + extension;
+        } else {
+            // No extension - replace entire filename
+            QString result = fileName;
+            result.replace(regex, m_replacement);
+            return result;
+        }
     }
     return fileName;
 }
 
 QString PrefixOperation::perform(const QString &fileName) const
 {
-    return m_prefix + fileName;
+    // Separate basename from extension
+    int dotIndex = fileName.lastIndexOf('.');
+    if (dotIndex > 0) {
+        // Has extension - only add prefix to basename
+        QString baseName = fileName.left(dotIndex);
+        QString extension = fileName.mid(dotIndex);
+        return m_prefix + baseName + extension;
+    } else {
+        // No extension - prefix entire filename
+        return m_prefix + fileName;
+    }
 }
 
 QString SuffixOperation::perform(const QString &fileName) const
@@ -31,19 +52,33 @@ QString SuffixOperation::perform(const QString &fileName) const
 
 QString InsertOperation::perform(const QString &fileName) const
 {
-    // Insert text at the specified position
-    // If position is negative or beyond the string length, handle gracefully
+    // Separate basename from extension
+    int dotIndex = fileName.lastIndexOf('.');
+    QString baseName;
+    QString extension;
+    
+    if (dotIndex > 0) {
+        // Has extension - only insert in basename
+        baseName = fileName.left(dotIndex);
+        extension = fileName.mid(dotIndex);
+    } else {
+        // No extension - use entire filename as basename
+        baseName = fileName;
+        extension = "";
+    }
+    
+    // Insert text at the specified position within the basename
+    // If position is negative or beyond the basename length, handle gracefully
     int pos = m_position;
     if (pos < 0) {
         pos = 0;
     }
-    if (pos > fileName.length()) {
-        pos = fileName.length();
+    if (pos > baseName.length()) {
+        pos = baseName.length();
     }
     
-    QString result = fileName;
-    result.insert(pos, m_text);
-    return result;
+    baseName.insert(pos, m_text);
+    return baseName + extension;
 }
 
 QString ChangeExtensionOperation::perform(const QString &fileName) const
