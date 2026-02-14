@@ -133,14 +133,35 @@ Files with changes are highlighted in bold green text in the "New Name" column.
    - "photo (2).jpg" → "IMG_002_photo (2).jpg"
    - "photo (3).jpg" → "IMG_003_photo (3).jpg"
 
-**See [TAG_NUMBERING.md](TAG_NUMBERING.md) for complete documentation on tag numbering.**
+## Auto-Numbering Tags
+
+Tags allow you to include auto-incrementing numbers in prefix, suffix, replace text, and insert operations. Tag format: `<zeros:start>`
+
+**Format Components:**
+- **zeros**: One or more zeros defining the number format (leading zeros)
+- **:start** (optional): Starting number (defaults to 1 if omitted)
+
+**Common Examples:**
+- `<0>` - Single digit starting at 1: 1, 2, 3...
+- `<00>` - Two digits with leading zeros: 01, 02, 03...
+- `<000>` - Three digits: 001, 002, 003...
+- `<0:5>` - Single digit starting at 5: 5, 6, 7...
+- `<00:14>` - Two digits starting at 14: 14, 15, 16...
+
+**Multiple Tags:**
+You can use multiple tags in the same operation. Example: `<0>-<00:5>_` produces `1-05_`, `2-06_`, etc.
+
+**Notes:**
+- Tags work in prefix, suffix, replace text, and insert text fields
+- File indexing is 0-based, but the start number determines the first visible number
+- Numbers exceeding the format width will use additional digits (e.g., `<00>` at file 100 shows `100`)
 
 ## Tips
 
 - **Preview First**: Always check the preview before applying
 - **Operation Order Matters**: Operations are applied sequentially
 - **Regex Power**: Use regex patterns for complex replacements
-- **Auto-Numbering**: Use tags like `<0>`, `<00:5>`, or `<000:14>` for sequential numbering (see [TAG_NUMBERING.md](TAG_NUMBERING.md))
+- **Auto-Numbering**: Use tags like `<0>`, `<00:5>`, or `<000:14>` for sequential numbering (see Auto-Numbering Tags section above)
 - **Extension Preservation**: All operations except "Change Extension" preserve the file extension - they only modify the basename
 - **Undo**: There is no undo - make sure to preview carefully
 - **Conflicts**: If a target filename already exists, that file will be skipped with an error
