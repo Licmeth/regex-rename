@@ -48,7 +48,7 @@ void FileListWidget::setupUI()
     treeWidget->setColumnCount(3);
     treeWidget->setHeaderLabels({tr("Original Name"), tr("New Name"), tr("File Path")});
     treeWidget->setAlternatingRowColors(true);
-    treeWidget->setSortingEnabled(true);
+    treeWidget->setSortingEnabled(true);  // Enable sorting
     treeWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
     treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     
@@ -77,7 +77,7 @@ void FileListWidget::setupUI()
     
     // Bottom bar with file count and rename button
     QHBoxLayout *bottomLayout = new QHBoxLayout();
-    bottomLayout->setContentsMargins(0, 5, 0, 0);
+    bottomLayout->setContentsMargins(0, 0, 0, 0);
     
     // File count label on the left
     fileCountLabel = new QLabel(this);
@@ -89,6 +89,7 @@ void FileListWidget::setupUI()
     
     // Rename button on the right
     renameButton = new QPushButton(tr("Rename Files"), this);
+    renameButton->setObjectName("renameButton");
     connect(renameButton, &QPushButton::clicked, this, &FileListWidget::renameRequested);
     bottomLayout->addWidget(renameButton);
     

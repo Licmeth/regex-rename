@@ -66,8 +66,8 @@ void MainWindow::setupUI()
     splitter->addWidget(fileList);
     
     // Set initial splitter sizes (30% left, 70% right)
-    splitter->setStretchFactor(0, 3);
-    splitter->setStretchFactor(1, 7);
+    splitter->setStretchFactor(splitter->indexOf(operationList), 3);
+    splitter->setStretchFactor(splitter->indexOf(fileList), 7);
     
     setCentralWidget(splitter);
     
