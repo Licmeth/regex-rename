@@ -41,7 +41,7 @@ Qt::SortOrder lastSortOrder;
 
 ### Behavior
 
-- **Initial State**: Table is unsorted or sorted by column 0 (Original Name) in ascending order
+- **Initial State**: Table is sorted by column 0 (Original Name) in ascending order
 - **User sorts by "Original Name" or "File Path"**: Normal sorting behavior, tracking variables updated
 - **User clicks "New Name" header**: The sort is immediately reverted to the last valid sort state
 - **Result**: The "New Name" column appears non-sortable while other columns remain sortable

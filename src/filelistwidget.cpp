@@ -62,8 +62,11 @@ void FileListWidget::setupUI()
         if (logicalIndex == 1) {
             // Prevent sorting on "New Name" column (column 1)
             // Restore the last valid sort using QueuedConnection to avoid recursive signals
-            QMetaObject::invokeMethod(this, [this]() {
-                this->treeWidget->sortByColumn(this->lastSortColumn, this->lastSortOrder);
+            // Capture the values to avoid race conditions
+            int column = this->lastSortColumn;
+            Qt::SortOrder sortOrder = this->lastSortOrder;
+            QMetaObject::invokeMethod(this, [this, column, sortOrder]() {
+                this->treeWidget->sortByColumn(column, sortOrder);
             }, Qt::QueuedConnection);
         } else {
             // Update the last valid sort column
