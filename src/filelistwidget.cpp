@@ -71,7 +71,8 @@ void FileListWidget::setupUI()
     bottomLayout->setContentsMargins(0, 5, 0, 0);
     
     // File count label on the left
-    fileCountLabel = new QLabel(tr("0 files"), this);
+    fileCountLabel = new QLabel(this);
+    updateFileCountLabel();
     bottomLayout->addWidget(fileCountLabel);
     
     // Add stretch to push button to the right
