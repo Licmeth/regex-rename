@@ -42,7 +42,7 @@ void FileListWidget::setupUI()
     treeWidget->setColumnCount(3);
     treeWidget->setHeaderLabels({tr("Original Name"), tr("New Name"), tr("File Path")});
     treeWidget->setAlternatingRowColors(true);
-    treeWidget->setSortingEnabled(false);
+    treeWidget->setSortingEnabled(true);
     treeWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
     treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     
