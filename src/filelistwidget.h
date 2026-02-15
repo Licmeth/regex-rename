@@ -11,6 +11,8 @@
 #include <QSet>
 #include <QFutureWatcher>
 #include <QMenu>
+#include <QLabel>
+#include <QPushButton>
 #include <memory>
 
 class Operation;
@@ -37,6 +39,7 @@ public:
 
 signals:
     void filesChanged();
+    void renameRequested();
 
 private slots:
     void onItemSelectionChanged();
@@ -46,11 +49,14 @@ private slots:
 
 private:
     void setupUI();
+    void updateFileCountLabel();
     static QString applyOperations(const QString &fileName, 
                                    const QList<std::shared_ptr<Operation>> &operations,
                                    int fileIndex = 0);
     
     QTreeWidget *treeWidget;
+    QLabel *fileCountLabel;
+    QPushButton *renameButton;
     QList<FileEntry> files;
     QSet<QString> filePathsSet; // For fast duplicate checking
     QFutureWatcher<QString> *previewWatcher;

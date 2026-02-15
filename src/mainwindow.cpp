@@ -76,6 +76,10 @@ void MainWindow::setupUI()
             this, &MainWindow::updatePreviews);
     connect(fileList, &FileListWidget::filesChanged,
             this, &MainWindow::updatePreviews);
+    
+    // Connect rename button to apply rename action
+    connect(fileList, &FileListWidget::renameRequested,
+            this, &MainWindow::onApplyRename);
 }
 
 void MainWindow::onAddFiles()

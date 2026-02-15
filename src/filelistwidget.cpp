@@ -1,8 +1,10 @@
 #include "filelistwidget.h"
 #include "operation.h"
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QHeaderView>
 #include <QLabel>
+#include <QPushButton>
 #include <QFile>
 #include <QDir>
 #include <QRegularExpression>
@@ -63,6 +65,25 @@ void FileListWidget::setupUI()
             this, &FileListWidget::showContextMenu);
     
     mainLayout->addWidget(treeWidget, 1);
+    
+    // Bottom bar with file count and rename button
+    QHBoxLayout *bottomLayout = new QHBoxLayout();
+    bottomLayout->setContentsMargins(0, 5, 0, 0);
+    
+    // File count label on the left
+    fileCountLabel = new QLabel(this);
+    updateFileCountLabel();
+    bottomLayout->addWidget(fileCountLabel);
+    
+    // Add stretch to push button to the right
+    bottomLayout->addStretch();
+    
+    // Rename button on the right
+    renameButton = new QPushButton(tr("Rename Files"), this);
+    connect(renameButton, &QPushButton::clicked, this, &FileListWidget::renameRequested);
+    bottomLayout->addWidget(renameButton);
+    
+    mainLayout->addLayout(bottomLayout);
 }
 
 void FileListWidget::addFiles(const QStringList &filePaths)
@@ -103,6 +124,7 @@ void FileListWidget::addFiles(const QStringList &filePaths)
     // Re-enable updates and trigger a single repaint
     treeWidget->setUpdatesEnabled(true);
     
+    updateFileCountLabel();
     emit filesChanged();
 }
 
@@ -111,6 +133,7 @@ void FileListWidget::clearFiles()
     treeWidget->clear();
     files.clear();
     filePathsSet.clear();
+    updateFileCountLabel();
     emit filesChanged();
 }
 
@@ -305,5 +328,16 @@ void FileListWidget::removeSelectedFiles()
     // Re-enable updates
     treeWidget->setUpdatesEnabled(true);
     
+    updateFileCountLabel();
     emit filesChanged();
+}
+
+void FileListWidget::updateFileCountLabel()
+{
+    int count = files.size();
+    if (count == 1) {
+        fileCountLabel->setText(tr("1 file"));
+    } else {
+        fileCountLabel->setText(tr("%1 files").arg(count));
+    }
 }
