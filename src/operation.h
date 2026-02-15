@@ -161,4 +161,24 @@ private:
     CaseType m_caseType;
 };
 
+/**
+ * @brief New Name operation - replaces the entire base name with a new one.
+ * 
+ * Preserves the file extension while replacing the base name.
+ */
+class NewNameOperation : public Operation
+{
+public:
+    explicit NewNameOperation(const QString &newName)
+        : m_newName(newName) {}
+    
+    QString perform(const QString &fileName, int fileIndex = 0) const override;
+    QString getType() const override { return "new_name"; }
+    
+    QString getNewName() const { return m_newName; }
+    
+private:
+    QString m_newName;
+};
+
 #endif // OPERATION_H

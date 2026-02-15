@@ -35,6 +35,7 @@ void OperationCard::setupUI()
     operationTypeCombo->addItem(tr("Insert Text"), "insert");
     operationTypeCombo->addItem(tr("Change Extension"), "change_ext");
     operationTypeCombo->addItem(tr("Change Case"), "change_case");
+    operationTypeCombo->addItem(tr("New Name"), "new_name");
     
     typeLayout->addWidget(typeLabel);
     typeLayout->addWidget(operationTypeCombo, 1);
@@ -209,5 +210,14 @@ void OperationCard::updateValueFieldVisibility()
         replacementEdit->hide();
         caseTypeLabel->show();
         caseTypeCombo->show();
+    } else if (type == "new_name") {
+        valueLabel->setText(tr("New Name:"));
+        valueLabel->show();
+        valueEdit->show();
+        valueEdit->setPlaceholderText(tr("Enter new base name..."));
+        replacementLabel->hide();
+        replacementEdit->hide();
+        caseTypeLabel->hide();
+        caseTypeCombo->hide();
     }
 }

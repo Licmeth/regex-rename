@@ -79,6 +79,8 @@ QList<std::shared_ptr<Operation>> OperationListWidget::getOperations() const
                 ct = ChangeCaseOperation::Lowercase;  // Default
             }
             op = std::make_shared<ChangeCaseOperation>(ct);
+        } else if (type == "new_name") {
+            op = std::make_shared<NewNameOperation>(value);
         }
         
         if (op) {

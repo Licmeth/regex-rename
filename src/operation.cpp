@@ -183,3 +183,22 @@ QString ChangeCaseOperation::perform(const QString &fileName, int fileIndex) con
     
     return baseName + extension;
 }
+
+QString NewNameOperation::perform(const QString &fileName, int fileIndex) const
+{
+    QString newNameWithTags = replaceTags(m_newName, fileIndex);
+    
+    // Separate basename from extension in the original filename
+    int dotIndex = fileName.lastIndexOf('.');
+    QString extension;
+    
+    if (dotIndex > 0) {
+        // Has extension - preserve it
+        extension = fileName.mid(dotIndex);
+    } else {
+        // No extension
+        extension = "";
+    }
+    
+    return newNameWithTags + extension;
+}
