@@ -44,11 +44,17 @@ private slots:
     void showContextMenu(const QPoint &pos);
     void removeSelectedFiles();
 
+protected:
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dragMoveEvent(QDragMoveEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
+
 private:
     void setupUI();
     static QString applyOperations(const QString &fileName, 
                                    const QList<std::shared_ptr<Operation>> &operations,
                                    int fileIndex = 0);
+    QStringList collectFilesFromDirectory(const QString &dirPath);
     
     QTreeWidget *treeWidget;
     QList<FileEntry> files;
