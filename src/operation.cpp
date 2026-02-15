@@ -189,6 +189,7 @@ QString NewNameOperation::perform(const QString &fileName, int fileIndex) const
     QString newNameWithTags = replaceTags(m_newName, fileIndex);
     
     // Separate basename from extension in the original filename
+    // Note: dotIndex > 0 ensures dotfiles (like .bashrc) are not treated as having extensions
     int dotIndex = fileName.lastIndexOf('.');
     QString extension;
     
@@ -196,7 +197,7 @@ QString NewNameOperation::perform(const QString &fileName, int fileIndex) const
         // Has extension - preserve it
         extension = fileName.mid(dotIndex);
     } else {
-        // No extension
+        // No extension (or is a dotfile)
         extension = "";
     }
     
