@@ -12,6 +12,12 @@
 #include <QtConcurrent>
 #include <QFuture>
 #include <QDebug>
+#include <QDragEnterEvent>
+#include <QDragMoveEvent>
+#include <QDropEvent>
+#include <QMimeData>
+#include <QUrl>
+#include <QDirIterator>
 
 FileListWidget::FileListWidget(QWidget *parent)
     : QWidget(parent)
@@ -45,6 +51,9 @@ void FileListWidget::setupUI()
     treeWidget->setSortingEnabled(true);
     treeWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
     treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+    
+    // Enable drag and drop
+    setAcceptDrops(true);
     
     // Set column widths
     // Use Interactive mode to allow manual column resizing by the user
@@ -332,6 +341,67 @@ void FileListWidget::removeSelectedFiles()
     emit filesChanged();
 }
 
+void FileListWidget::dragEnterEvent(QDragEnterEvent *event)
+{
+    // Accept drag if it contains URLs (files/folders)
+    if (event->mimeData()->hasUrls()) {
+        event->acceptProposedAction();
+    }
+}
+
+void FileListWidget::dragMoveEvent(QDragMoveEvent *event)
+{
+    // Accept drag move if it contains URLs
+    if (event->mimeData()->hasUrls()) {
+        event->acceptProposedAction();
+    }
+}
+
+void FileListWidget::dropEvent(QDropEvent *event)
+{
+    const QMimeData *mimeData = event->mimeData();
+    
+    if (mimeData->hasUrls()) {
+        QStringList filePaths;
+        
+        // Process each dropped URL
+        for (const QUrl &url : mimeData->urls()) {
+            if (url.isLocalFile()) {
+                QString path = url.toLocalFile();
+                QFileInfo fileInfo(path);
+                
+                if (fileInfo.isFile()) {
+                    // Add file directly
+                    filePaths.append(path);
+                } else if (fileInfo.isDir()) {
+                    // Recursively collect files from directory
+                    filePaths.append(collectFilesFromDirectory(path));
+                }
+            }
+        }
+        
+        // Add all collected files
+        if (!filePaths.isEmpty()) {
+            addFiles(filePaths);
+        }
+        
+        event->acceptProposedAction();
+    }
+}
+
+QStringList FileListWidget::collectFilesFromDirectory(const QString &dirPath)
+{
+    QStringList filePaths;
+    
+    // Use QDirIterator to recursively traverse the directory
+    QDirIterator it(dirPath, QDir::Files, QDirIterator::Subdirectories);
+    
+    while (it.hasNext()) {
+        filePaths.append(it.next());
+    }
+    
+    return filePaths;
+}
 void FileListWidget::updateFileCountLabel()
 {
     int count = files.size();
