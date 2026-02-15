@@ -370,8 +370,7 @@ QStringList FileListWidget::collectFilesFromDirectory(const QString &dirPath)
     QStringList filePaths;
     
     // Use QDirIterator to recursively traverse the directory
-    // Include NoDotAndDotDot to skip . and .. entries explicitly
-    QDirIterator it(dirPath, QDir::Files | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
+    QDirIterator it(dirPath, QDir::Files, QDirIterator::Subdirectories);
     
     while (it.hasNext()) {
         filePaths.append(it.next());
