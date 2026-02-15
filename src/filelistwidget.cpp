@@ -20,7 +20,9 @@
 #include <QDirIterator>
 
 FileListWidget::FileListWidget(QWidget *parent)
-    : QWidget(parent)
+    : QWidget(parent),
+      lastSortColumn(0),
+      lastSortOrder(Qt::AscendingOrder)
 {
     setupUI();
     
@@ -51,6 +53,27 @@ void FileListWidget::setupUI()
     treeWidget->setSortingEnabled(true);  // Enable sorting
     treeWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
     treeWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+    
+    // Disable sorting for "New Name" column (column 1) only
+    // Track the last valid sort to restore when user tries to sort by column 1
+    QHeaderView *header = treeWidget->header();
+    connect(header, &QHeaderView::sortIndicatorChanged, this, 
+            [this](int logicalIndex, Qt::SortOrder order) {
+        if (logicalIndex == 1) {
+            // Prevent sorting on "New Name" column (column 1)
+            // Restore the last valid sort using QueuedConnection to avoid recursive signals
+            // Capture the values to avoid race conditions
+            int column = this->lastSortColumn;
+            Qt::SortOrder sortOrder = this->lastSortOrder;
+            QMetaObject::invokeMethod(this, [this, column, sortOrder]() {
+                this->treeWidget->sortByColumn(column, sortOrder);
+            }, Qt::QueuedConnection);
+        } else {
+            // Update the last valid sort column
+            this->lastSortColumn = logicalIndex;
+            this->lastSortOrder = order;
+        }
+    });
     
     // Enable drag and drop
     setAcceptDrops(true);
