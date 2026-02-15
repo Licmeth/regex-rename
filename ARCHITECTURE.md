@@ -192,6 +192,7 @@ Tag Examples:
 4. **Insert**: Insert text at position (0-based index), supports tags
 5. **Change Extension**: Replace file extension completely
 6. **Change Case**: Transform basename to lowercase/UPPERCASE/Title Case
+7. **New Name**: Replace entire basename with new name, supports tags, preserves extension
 
 ## Key Classes
 
@@ -276,6 +277,7 @@ Tag Examples:
 4. **InsertOperation**: Insert at position with tag support
 5. **ChangeExtensionOperation**: Replace file extension
 6. **ChangeCaseOperation**: Transform case (Lowercase/Uppercase/TitleCase)
+7. **NewNameOperation**: Replace entire basename with new name, preserves extension, tag support
 
 ## Signals & Slots
 

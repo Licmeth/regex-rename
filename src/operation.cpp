@@ -183,3 +183,23 @@ QString ChangeCaseOperation::perform(const QString &fileName, int fileIndex) con
     
     return baseName + extension;
 }
+
+QString NewNameOperation::perform(const QString &fileName, int fileIndex) const
+{
+    QString newNameWithTags = replaceTags(m_newName, fileIndex);
+    
+    // Separate basename from extension in the original filename
+    // Note: dotIndex > 0 ensures dotfiles (like .bashrc) are not treated as having extensions
+    int dotIndex = fileName.lastIndexOf('.');
+    QString extension;
+    
+    if (dotIndex > 0) {
+        // Has extension - preserve it
+        extension = fileName.mid(dotIndex);
+    } else {
+        // No extension (or is a dotfile)
+        extension = "";
+    }
+    
+    return newNameWithTags + extension;
+}
