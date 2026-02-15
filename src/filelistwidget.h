@@ -66,6 +66,10 @@ private:
     QList<FileEntry> files;
     QSet<QString> filePathsSet; // For fast duplicate checking
     QFutureWatcher<QString> *previewWatcher;
+    
+    // Track last valid sort column (for preventing sort on column 1)
+    int lastSortColumn;
+    Qt::SortOrder lastSortOrder;
 };
 
 #endif // FILELISTWIDGET_H
