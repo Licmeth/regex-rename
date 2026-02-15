@@ -45,6 +45,7 @@ After building, run the application:
    - **Insert**: Add text at specific position
    - **Change Extension**: Modify file extensions
    - **Change Case**: Convert to lowercase, uppercase, or title case
+   - **New Name**: Replace the entire base name with a new one (preserves extension)
 4. **Reorder**: Use ↑↓ buttons to arrange operation order (applied top to bottom)
 5. **Preview**: View results in the "New Name" column (changes shown in bold green)
 6. **Apply**: Execute renaming with File → Apply Rename (Ctrl+R)
